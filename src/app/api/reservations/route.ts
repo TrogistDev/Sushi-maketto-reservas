@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache';
 
 export async function POST(request: Request) {
   try {
@@ -43,6 +44,7 @@ export async function POST(request: Request) {
         aceitaPromocoes: false,
       },
     })
+    revalidatePath('/');
 
     return NextResponse.json(reservation, { status: 201 })
   } catch (error: any) {

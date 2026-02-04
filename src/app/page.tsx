@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import EventCard from "@/components/EventCard";
 
+export const dynamic = 'force-dynamic';
 export default async function Home() {
   const listaDeEventos = await prisma.evento.findMany({
     where: { active: true },
