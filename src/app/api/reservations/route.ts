@@ -2,49 +2,49 @@ import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache';
 
+// app/api/reservations/route.ts
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const numPessoasNovas = Number(body.guests)
+    const { eventId, scheduledTime, guests } = body
 
-    // 1. Buscar o evento e as reservas atuais
+    // 1. Buscar o evento e todas as reservas já feitas
     const evento = await prisma.evento.findUnique({
-      where: { id: body.eventId },
-      include: {
-        reservas: {
-          select: { quantidadePessoas: true }
-        }
-      }
+      where: { id: eventId },
+      include: { reservas: true }
     })
 
-    if (!evento) {
-      return NextResponse.json({ error: 'Evento não encontrado' }, { status: 404 })
-    }
+    if (!evento) return NextResponse.json({ error: "Evento não encontrado" }, { status: 404 })
 
     // 2. Calcular ocupação atual
-    const ocupacaoAtual = evento.reservas.reduce((acc, r) => acc + r.quantidadePessoas, 0)
-    const vagasRestantes = evento.totalCapacity - ocupacaoAtual
-
-    // 3. VALIDAR SE CABE
-    if (numPessoasNovas > vagasRestantes) {
+    const ocupacaoAtual = evento.reservas.reduce((acc, res) => acc + res.quantidadePessoas, 0)
+    
+    // 3. Verificar se a nova reserva excede a capacidade
+    if (ocupacaoAtual + guests > evento.totalCapacity) {
+      const vagasRestantes = evento.totalCapacity - ocupacaoAtual
       return NextResponse.json(
-        { error: `Desculpe, só temos ${vagasRestantes} vagas restantes.` }, 
+        { error: `Desculpe, restam apenas ${vagasRestantes} vagas para este evento.` }, 
         { status: 400 }
       )
     }
 
-    // 4. Criar a reserva se passar na validação
+    // 4. Verificar se o horário específico já está tomado (sua regra anterior)
+    const slotOcupado = evento.reservas.find(r => r.horario === scheduledTime)
+    if (slotOcupado) {
+      return NextResponse.json({ error: "Este horário já foi reservado." }, { status: 400 })
+    }
+
+    // Se passou em tudo, cria a reserva
     const reservation = await prisma.reserva.create({
       data: {
         nome: body.name,
         telefone: body.phone,
         email: body.email,
-        quantidadePessoas: numPessoasNovas,
-        eventoId: body.eventId,
-        aceitaPromocoes: false,
+        quantidadePessoas: guests,
+        eventoId: eventId,
+        horario: scheduledTime,
       },
     })
-    revalidatePath('/');
 
     return NextResponse.json(reservation, { status: 201 })
   } catch (error: any) {

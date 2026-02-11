@@ -1,23 +1,42 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import toast from 'react-hot-toast'
+import Cookies from 'js-cookie'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Mock de login simples para você começar
-    if (email === "maketto@gmail.com" && senha === "123") {
-      localStorage.setItem("isLoggedIn", "true")
+  const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault()
+  const loadingToast = toast.loading("Autenticando...")
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    })
+
+    const data = await res.json()
+
+    if (res.ok) {
+      toast.success("Login realizado!", { id: loadingToast })
+      
+      // SALVAR COOKIE (Dura 1 dia, por exemplo)
+      // O Middleware agora conseguirá ler isso!
+      document.cookie = "isLoggedIn=true; path=/; max-age=86400; SameSite=Strict";
+      
       router.push('/admin/dashboard')
     } else {
-      alert("Credenciais inválidas!")
+      toast.error(data.error || "Erro ao entrar", { id: loadingToast })
     }
+  } catch (error) {
+    toast.error("Erro de conexão", { id: loadingToast })
   }
-
+}
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <form onSubmit={handleLogin} className="bg-zinc-900 p-8 rounded-lg border border-zinc-800 w-full max-w-md">

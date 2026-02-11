@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,7 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
- 
 }
 
 model Admin {
@@ -15,6 +12,7 @@ model Admin {
   username  String   @unique
   password  String   // Será encriptada com bcrypt
   createdAt DateTime @default(now())
+
   @@map("Admin")
 }
 
@@ -25,12 +23,17 @@ model Evento {
   data          DateTime
   local         String
   imagemUrl     String?
-  totalCapacity Int       // Total de lugares no restaurante/evento
+  totalCapacity Int       // Capacidade total por horário ou por evento
+  
+  // NOVO: Lista de horários disponíveis selecionados pelo admin (ex: ["12:00", "18:30"])
+  availableSlots String[]  @default([])
+
   active        Boolean   @default(true)
   reservas      Reserva[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
+
 model Usuario {
   id    String @id @default(cuid())
   email String @unique
@@ -38,16 +41,20 @@ model Usuario {
 }
 
 model Reserva {
-  id              String   @id @default(cuid())
-  nome            String
-  telefone        String
-  email           String?
-  quantidadePessoas Int    // Quantos lugares esta reserva ocupa
-  aceitaPromocoes Boolean  @default(false)
+  id                String   @id @default(cuid())
+  nome              String
+  telefone          String
+  email             String?
+  quantidadePessoas Int      // Quantos lugares esta reserva ocupa
+  
+  // NOVO: Horário específico selecionado pelo cliente
+  horario           String   
+
+  aceitaPromocoes   Boolean  @default(false)
   
   // Relacionamento com o Evento
-  eventoId        String
-  evento          Evento   @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  eventoId          String
+  evento            Evento   @relation(fields: [eventoId], references: [id], onDelete: Cascade)
 
-  createdAt       DateTime @default(now())
+  createdAt         DateTime @default(now())
 }

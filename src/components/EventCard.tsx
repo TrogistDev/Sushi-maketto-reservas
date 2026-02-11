@@ -15,9 +15,19 @@ interface EventCardProps {
 export default function EventCard({ id, title, description, date, totalCapacity, occupiedSeats }: EventCardProps) {
   const [showForm, setShowForm] = useState(false)
   const isFull = occupiedSeats >= totalCapacity
+  const [hasPrefetched, setHasPrefetched] = useState(false);
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden p-6 mb-4">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden p-6 mb-4"
+    onMouseEnter={() => {
+    // Só faz o fetch se ainda não tiver feito
+    if (!hasPrefetched) {
+      console.log("Prefetching horários..."); // Apenas para você testar
+      fetch(`/api/events/${id}`);
+      setHasPrefetched(true); // Bloqueia novos fetches após o primeiro
+    }
+  }}
+    >
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
