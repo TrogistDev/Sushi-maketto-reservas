@@ -6,12 +6,15 @@ export async function POST(request: Request) {
     const { email, senha } = await request.json();
 
     const adminEmail = process.env.ADMIN_EMAIL;
-    const adminHash = process.env.ADMIN_PASSWORD_HASH
-  ?.replace(/['"]/g, "") // Remove aspas simples ou duplas que possam vir do .env
-  .replace(/[\n\r]/g, "") // Remove quebras de linha
-  .trim();
+    const adminHash = process.env.ADMIN_PASSWORD_HASH || "";
 
-console.log("DEBUG - Hash limpo (caracteres):", adminHash?.length);
+    const rawHash = adminHash.replace(/\\/g, "")       // Remove as barras \ se vierem do seu .env local
+  .replace(/\$\$/g, "$")    // Transforma $$ em $ se vier do Vercel
+  .replace(/['"]/g, "")     // Remove aspas
+  .trim();
+  
+
+console.log("DEBUG - Hash limpo (caracteres):", rawHash?.length);
     if (email !== adminEmail) {
       return NextResponse.json(
         { error: "Credenciais inválidas!" },
@@ -19,7 +22,7 @@ console.log("DEBUG - Hash limpo (caracteres):", adminHash?.length);
       );
     }
 
-    const senhaValida = await bcrypt.compare(senha, adminHash!);
+    const senhaValida = await bcrypt.compare(senha, rawHash);
 
     if (!senhaValida) {
         console.log("SENHA DIGITADA:", `|${senha}|`);
