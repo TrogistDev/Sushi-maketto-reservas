@@ -53,7 +53,7 @@ export async function POST(request: Request) {
 }
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // No Next.js 15+, o 'params' deve ser aguardado se for uma rota dinâmica
