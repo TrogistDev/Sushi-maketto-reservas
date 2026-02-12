@@ -20,7 +20,7 @@ export default function Navbar() {
     unoptimized={true} // Opcional: Desativa completamente o processamento do Next.js
             // w-full e object-cover forçam a imagem a cobrir a largura toda.
             // object-bottom garante que o detalhe de baixo (a onda) fique visível.
-            className="object-cover object-bottom"
+            className="object-fit object-bottom"
           />
         </div>
 
