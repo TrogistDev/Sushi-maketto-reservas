@@ -37,7 +37,7 @@ export default function EventCard({ id, title, description, date, totalCapacity,
         </div>
         
         {/* INDICADOR DE LUGARES DISPONÍVEIS */}
-        <div className="text-right">
+        <div className="text-right min-w-[105px]">
           <span className={`text-sm font-bold px-3 py-1 rounded-full ${isFull ? 'bg-red-900/50 text-red-500' : 'bg-green-900/50 text-green-500'}`}>
             {occupiedSeats} / {totalCapacity} lugares
           </span>

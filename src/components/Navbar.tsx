@@ -4,13 +4,13 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="relative w-full z-50">
+    <nav className="relative w-full z-50 overflow-hidden mb-2">
       {/* 1. h-[80px] no mobile e h-[120px] no desktop para uma altura fixa e limpa.
           2. w-full garante que a barra ocupe a largura inteira da tela.
       */}
-      <div className="relative w-full h-[80px] md:h-[100px] lg:h-[120px]">
+      <div className="relative w-full h-[80px] md:h-[100px] lg:h-[120px] ">
         {/* Imagem de Fundo */}
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <Image
             src="/navbarlg.webp"
             alt="Navbar Background"
@@ -20,7 +20,18 @@ export default function Navbar() {
     unoptimized={true} // Opcional: Desativa completamente o processamento do Next.js
             // w-full e object-cover forçam a imagem a cobrir a largura toda.
             // object-bottom garante que o detalhe de baixo (a onda) fique visível.
-            className="object-fit object-bottom"
+            className="object-fit object-bottom "
+            style={{ 
+      /* 1. Força o Opera a criar uma camada de pintura isolada */
+      willChange: 'filter',
+      /* 2. Remove o borrão de borda que causa a inversão de cor */
+      filter: 'blur(0px)',
+      /* 3. O segredo para o Opera: uma máscara que 'morde' a borda do componente */
+      clipPath: 'polygon(0% 1px, 100% 1px, 100% calc(100% - 1px), 0% calc(100% - 1px))',
+      /* 4. Garante que a imagem renderize pixel por pixel */
+      imageRendering: 'auto'
+    }}
+            
           />
         </div>
 

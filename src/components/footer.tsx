@@ -5,11 +5,11 @@ import { Instagram, Facebook, Phone, MapPin, Youtube } from 'lucide-react'
 export default function Footer() {
   return (
     <footer className="relative w-full bg-[#fce00f] py-2 border-t border-black/10">
-      <div className="container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-5 ">
+      <div className="container mx-auto px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-2 ">
         
-        <div className='flex flex-row items-center gap-5 lg:gap-10'>
+        <div className='flex flex-row gap-5 lg:gap-10 items-stretch'>
             {/* 1. Logo e Slogan */}
-            <div className="flex flex-col items-center md:items-start">
+            <div className="flex flex-col justify-between flex-1 min-w-[127px] lg:justify-center">
               <Link
                 href="/"
                 className="font-realist text-2xl md:text-3xl text-black tracking-tighter text-center"
