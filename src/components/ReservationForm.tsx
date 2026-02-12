@@ -142,7 +142,7 @@ export default function ReservationForm({ eventId }: { eventId: string }) {
       <div className="space-y-4">
         <h3 className="text-white font-semibold">Escolha o Horário</h3>
         {eventData?.availableSlots ? (
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-lg bg-zinc-950/50">
+          <div className="grid grid-cols-1 sm:grid-cols-4 items-center justify-center gap-2 max-h-48 overflow-y-auto p-2 border border-zinc-800 rounded-lg bg-zinc-950/50">
             {eventData.availableSlots.map((slot) => {
               // Verifica se este horário específico já está na lista de ocupados
               const isTaken = occupiedSlots.includes(slot);
@@ -154,7 +154,7 @@ export default function ReservationForm({ eventId }: { eventId: string }) {
                   // O segredo está aqui: o botão fica inativo se isTaken for true
                   disabled={isTaken}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`p-2 text-sm font-medium rounded-md transition-all border ${
+                  className={` min-w-[43px] p-2 text-sm font-medium rounded-md transition-all border ${
                     isTaken
                       ? "bg-zinc-800/50 border-zinc-800 text-zinc-700 cursor-not-allowed" // Estilo quando RESERVADO
                       : selectedSlot === slot

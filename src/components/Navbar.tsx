@@ -16,9 +16,11 @@ export default function Navbar() {
             alt="Navbar Background"
             fill
             priority
+            quality={100} // Define a qualidade máxima (0-100)
+    unoptimized={true} // Opcional: Desativa completamente o processamento do Next.js
             // w-full e object-cover forçam a imagem a cobrir a largura toda.
             // object-bottom garante que o detalhe de baixo (a onda) fique visível.
-            className="w-full h-full object-cover object-bottom"
+            className="object-cover object-bottom"
           />
         </div>
 

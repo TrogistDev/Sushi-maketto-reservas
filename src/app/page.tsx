@@ -31,6 +31,8 @@ export default async function Home() {
           alt="Background Sushi Maketto"
           fill
           priority
+          quality={100} // Define a qualidade máxima (0-100)
+    unoptimized={true} // Opcional: Desativa completamente o processamento do Next.js
           className="object-cover"
           sizes="100vw"
         />
