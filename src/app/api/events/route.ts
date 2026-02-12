@@ -7,7 +7,6 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     
-    // Log para depuração - verifique se 'availableSlots' aparece aqui no terminal
     console.log("Dados recebidos na API:", body)
 
     const newEvent = await prisma.evento.create({
@@ -19,7 +18,7 @@ export async function POST(request: Request) {
         totalCapacity: parseInt(body.totalCapacity), 
         imagemUrl: body.imagemUrl || null,
         active: true,
-        // ADICIONE ESTA LINHA ABAIXO:
+        // Mantido: Salva o array de strings (ex: ["12:00", "12:15"])
         availableSlots: body.availableSlots || [], 
       }
     })
@@ -35,14 +34,23 @@ export async function GET() {
   try {
     const eventos = await prisma.evento.findMany({
       include: {
+        // ATUALIZADO: Agora buscamos todos os detalhes da reserva para o Dashboard
         reservas: {
-          select: { quantidadePessoas: true }
+          select: {
+            id: true,
+            nome: true,      // Nome completo do cliente
+            telefone: true,  // Telefone de contacto
+            horario: true,   // Janela de tempo reservada
+            quantidadePessoas: true,
+            email: true      // Adicionado por precaução
+          }
         }
       },
       orderBy: { data: 'asc' }
     })
     return NextResponse.json(eventos)
   } catch (error) {
+    console.error("Erro ao buscar eventos:", error)
     return NextResponse.json({ error: 'Erro ao buscar eventos' }, { status: 500 })
   }
 }

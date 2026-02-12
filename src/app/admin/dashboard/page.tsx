@@ -91,6 +91,28 @@ export default function AdminDashboard() {
     const res = await fetch(`/api/events/${id}`, { method: 'DELETE' })
     if (res.ok) fetchEvents()
   }
+async function handleDeleteReserva(reservaId: string, eventoId: string) {
+  const confirmar = confirm("Deseja realmente cancelar esta reserva? O horário voltará a ficar disponível para outros clientes.")
+  
+  if (!confirmar) return
+
+  try {
+    const res = await fetch(`/api/reservas/${reservaId}`, {
+      method: 'DELETE',
+    })
+    console.log(res)
+
+    if (res.ok) {
+      toast.success("Reserva cancelada e horário libertado!")
+      fetchEvents() // Atualiza a lista para mostrar o horário disponível e remover a linha
+    } else {
+      toast.error("Erro ao cancelar reserva.")
+    }
+  } catch (error) {
+    toast.error("Erro de conexão.")
+    console.log(error)
+  }
+}
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white p-8 flex flex-col items-center">
@@ -173,27 +195,70 @@ export default function AdminDashboard() {
         </form>
       </div>
 
-      {/* Lista de Eventos */}
-      <section className="w-full max-w-4xl">
-        <h2 className="text-2xl font-bold mb-6">Eventos Ativos</h2>
-        <div className="grid gap-4">
-          {eventos.map((evento: any) => (
-            <div key={evento.id} className="bg-zinc-900 border border-zinc-800 p-4 rounded-lg flex justify-between items-center hover:border-zinc-700 transition-all">
-              <div>
-                <h3 className="text-lg font-bold">{evento.titulo}</h3>
-                <p className="text-zinc-500 text-sm">{new Date(evento.data).toLocaleDateString('pt-BR')}</p>
-                <p className="text-zinc-400 text-xs">Capacidade: {evento.totalCapacity} lugares</p>
-              </div>
-              <button 
-                onClick={() => handleDelete(evento.id)}
-                className="bg-zinc-800 hover:bg-red-900/40 text-red-500 p-2 rounded-lg border border-red-900/20 transition-colors"
-              >
-                🗑️ Excluir
-              </button>
-            </div>
-          ))}
+      {/* Lista de Eventos e suas Reservas */}
+<section className="w-full max-w-4xl">
+  <h2 className="text-2xl font-bold mb-6">Gestão de Reservas</h2>
+  <div className="grid gap-8">
+    {eventos.map((evento: any) => (
+      <div key={evento.id} className="bg-zinc-900 border border-zinc-800 p-6 rounded-xl">
+        <div className="flex justify-between items-start mb-6 border-b border-zinc-800 pb-4">
+          <div>
+            <h3 className="text-xl font-bold text-red-500">{evento.titulo}</h3>
+            <p className="text-zinc-400">{new Date(evento.data).toLocaleDateString('pt-PT')}</p>
+          </div>
+          <button 
+            onClick={() => handleDelete(evento.id)}
+            className="text-xs bg-red-900/20 text-red-500 hover:bg-red-900/40 px-3 py-1 rounded border border-red-900/30 transition-all"
+          >
+            Apagar Evento Inteiro
+          </button>
         </div>
-      </section>
+
+        {/* Tabela de Reservas do Evento */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="text-zinc-500 border-b border-zinc-800">
+                <th className="pb-2 font-medium">Horário</th>
+                <th className="pb-2 font-medium">Cliente</th>
+                <th className="pb-2 font-medium">Contacto</th>
+                <th className="pb-2 font-medium">Pessoas</th>
+                <th className="pb-2 font-medium text-right">Acções</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800">
+              {evento.reservas?.length > 0 ? (
+                evento.reservas.map((reserva: any) => (
+                  <tr key={reserva.id} className="group hover:bg-zinc-800/30 transition-colors">
+                    <td className="py-3 font-mono text-orange-400">{reserva.horario}</td>
+                    <td className="py-3 font-semibold">{reserva.nome}</td>
+                    <td className="py-3 text-zinc-400">{reserva.telefone}</td>
+                    <td className="py-3">{reserva.quantidadePessoas}</td>
+                    <td className="py-3 text-right">
+                      <button
+                        onClick={() => handleDeleteReserva(reserva.id, evento.id)}
+                        className="text-zinc-500 hover:text-red-500 transition-colors p-1"
+                        title="Cancelar Reserva"
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-zinc-600 italic">
+                    Nenhuma reserva para este evento ainda.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
     </div>
   )
 }

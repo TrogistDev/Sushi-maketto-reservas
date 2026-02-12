@@ -1,6 +1,9 @@
 // src/app/page.tsx
 import { prisma } from "@/lib/prisma";
 import EventCard from "@/components/EventCard";
+import Navbar from "@/components/Navbar";
+import Image from "next/image";
+import Footer from "@/components/footer";
 
 export const dynamic = 'force-dynamic';
 export default async function Home() {
@@ -17,9 +20,25 @@ export default async function Home() {
   });
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-4xl font-bold text-center mb-12 text-red-600 italic">
-        SUSHI MAKETTO
+    <div className="relative h-screen w-full flex flex-col overflow-hidden" >
+    <Navbar/>
+
+    <main className=" relative h-screen text-white p-8 overflow-hidden">
+      {/* IMAGEM DE FUNDO GLOBAL */}
+      <div className="fixed inset-0 -z-50 w-full h-full overflow-hidden">
+        <Image
+          src="/background.webp" 
+          alt="Background Sushi Maketto"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        {/* Overlay para garantir que o texto seja legível sobre a foto */}
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+      <h1 className="text-5xl font-bold text-center mb-12 mt-12 text-[white] tracking-tighter">
+        RESERVA TUA MESA 
       </h1>
 
       <div className="max-w-4xl mx-auto grid gap-6">
@@ -52,5 +71,7 @@ export default async function Home() {
         )}
       </div>
     </main>
+    <Footer/>
+    </div>
   );
 }

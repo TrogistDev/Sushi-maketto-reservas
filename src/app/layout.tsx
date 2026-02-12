@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
+import localFont from "next/font/local";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
   title: "Sushi Maketto Reservas",
   description: "Reserva tua mesa aqui.",
 };
-
+const realistWind = localFont({
+  src: '../../public/fonts/RealistWind.otf', // Ajuste o caminho conforme sua pasta
+  variable: '--font-realist-wind',
+})
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${realistWind.variable} antialiased`}
       >
         <Toaster/>
         {children}

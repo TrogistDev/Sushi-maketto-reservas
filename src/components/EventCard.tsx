@@ -31,7 +31,7 @@ export default function EventCard({ id, title, description, date, totalCapacity,
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-2xl font-bold text-white mb-2">{title}</h3>
-          <p className="text-red-500 font-medium">
+          <p className="text-[white] font-medium">
             {new Date(date).toLocaleString('pt-BR')}
           </p>
         </div>
@@ -47,27 +47,29 @@ export default function EventCard({ id, title, description, date, totalCapacity,
 
       <p className="text-zinc-400 mb-6">{description}</p>
 
-      {!showForm ? (
-        <button
-          onClick={() => setShowForm(true)}
-          disabled={isFull}
-          className={`w-full font-bold py-3 rounded-lg transition-all ${
-            isFull 
-            ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
-            : 'bg-red-600 hover:bg-red-700 text-white'
-          }`}
-        >
-          {isFull ? "ESGOTADO" : "Reservar Minha Mesa"}
-        </button>
-      ) : (
-        <div className="mt-4 p-4 border-t border-zinc-800">
-           <div className="flex justify-between items-center mb-4">
-            <h4 className="text-white font-semibold">Dados da Reserva</h4>
-            <button onClick={() => setShowForm(false)} className="text-zinc-500 hover:text-white text-sm">Cancelar</button>
+      <div className='flex flex-col items-center'>
+        {!showForm ? (
+          <button
+            onClick={() => setShowForm(true)}
+            disabled={isFull}
+            className={`w-[40%] min-w-[200px] font-bold py-3 rounded-lg transition-all ${
+              isFull
+              ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+              : 'bg-red-600 hover:bg-red-700 text-white'
+            }`}
+          >
+            {isFull ? "ESGOTADO" : "Reservar Minha Mesa"}
+          </button>
+        ) : (
+          <div className="mt-4 p-4 border-t border-zinc-800">
+             <div className="flex justify-between items-center mb-4">
+              <h4 className="text-white font-semibold">Dados da Reserva</h4>
+              <button onClick={() => setShowForm(false)} className="text-zinc-500 hover:text-white text-sm">Cancelar</button>
+            </div>
+            <ReservationForm eventId={id} />
           </div>
-          <ReservationForm eventId={id} />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

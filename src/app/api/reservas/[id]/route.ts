@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import { revalidatePath } from 'next/cache';
+
 
 // app/api/reservations/route.ts
 export async function POST(request: Request) {
@@ -48,6 +48,37 @@ export async function POST(request: Request) {
 
     return NextResponse.json(reservation, { status: 201 })
   } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    // No Next.js 15+, o 'params' deve ser aguardado se for uma rota dinâmica
+    // Mas para garantir compatibilidade, pegamos o id de forma explícita
+    const { id } = await params; 
+
+    if (!id) {
+      return NextResponse.json({ error: "ID não fornecido" }, { status: 400 })
+    }
+
+    console.log("Tentando deletar a reserva com ID:", id)
+
+    const reservaDeletada = await prisma.reserva.delete({
+      where: { id: id }
+    })
+
+    return NextResponse.json({ success: true, message: "Reserva removida" })
+  } catch (error: any) {
+    console.error("ERRO AO DELETAR NO PRISMA:", error.message)
+    
+    // Se o erro for que o registro não existe, retornamos 404
+    if (error.code === 'P2025') {
+      return NextResponse.json({ error: "Reserva já não existe" }, { status: 404 })
+    }
+
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
