@@ -23,9 +23,9 @@ export default async function Home() {
     <div className="relative h-screen w-full flex flex-col overflow-hidden" >
     <Navbar/>
 
-    <main className=" relative h-screen text-white p-8 overflow-hidden">
+    
       {/* IMAGEM DE FUNDO GLOBAL */}
-      <div className="fixed inset-0 -z-50 w-full h-full overflow-hidden">
+      <div className="fixed inset-0 -z-50 w-full h-full">
         <Image
           src="/background.webp" 
           alt="Background Sushi Maketto"
@@ -37,6 +37,8 @@ export default async function Home() {
         {/* Overlay para garantir que o texto seja legível sobre a foto */}
         <div className="absolute inset-0 bg-black/50" />
       </div>
+
+      <main className=" flex-1 overflow-y-auto text-white p-8 scrollbar-hide">
       <h1 className="text-5xl font-bold text-center mb-12 mt-12 text-[white] tracking-tighter">
         RESERVA TUA MESA 
       </h1>
