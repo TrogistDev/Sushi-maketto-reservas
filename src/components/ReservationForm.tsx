@@ -29,19 +29,7 @@ export default function ReservationForm({ eventId }: { eventId: string }) {
     if (eventId) getEventDetails();
   }, [eventId]);
 
-  useEffect(() => {
-    async function getEventDetails() {
-      const res = await fetch(`/api/events/${eventId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setEventData(data);
-        // Extrair apenas os horários que já possuem reservas
-        const taken = data.reservas?.map((r: any) => r.horario) || [];
-        setOccupiedSlots(taken);
-      }
-    }
-    if (eventId) getEventDetails();
-  }, [eventId]);
+
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -70,7 +58,7 @@ export default function ReservationForm({ eventId }: { eventId: string }) {
     scheduledTime: selectedSlot,
   };
 
-  const res = await fetch("/api/reservations", {
+  const res = await fetch(`/api/reservas/${eventId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

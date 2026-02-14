@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="flex flex-col justify-between flex-1 min-w-[127px] lg:justify-center">
               <Link
                 href="/"
-                className="font-realist text-2xl md:text-3xl text-black tracking-tighter text-center"
+                className="font-realist text-2xl md:text-3xl text-black tracking-tighter text-center "
               >
                 SUSHI MAKETTO <span className="text-sm font-sans align-top">®</span>
               </Link>
