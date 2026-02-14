@@ -24,6 +24,10 @@ export default function ReservationForm({ eventId }: { eventId: string }) {
       if (res.ok) {
         const data = await res.json();
         setEventData(data);
+        if (data.reservas) {
+        const taken = data.reservas.map((r: any) => r.horario);
+        setOccupiedSlots(taken);
+      }
       }
     }
     if (eventId) getEventDetails();
